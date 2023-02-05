@@ -54,7 +54,7 @@ def place_market_order(client, market, side, size, price, reduce_only):
     size=size,
     price=price,
     limit_fee='0.015',
-    expiration_epoch_seconds=expiration.timestamp(),
+    expiration_epoch_seconds=int(time.time() + 60 * 60),
     time_in_force="FOK", 
     reduce_only=reduce_only
   )
