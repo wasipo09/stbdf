@@ -2,10 +2,10 @@ from dydx3.constants import API_HOST_GOERLI, API_HOST_MAINNET
 from decouple import config
 
 # !!!! SELECT MODE !!!!
-MODE = "PRODUCTION"
+MODE = "DEVELOPMENT"
 
 # Close all open positions and orders
-ABORT_ALL_POSITIONS = False
+ABORT_ALL_POSITIONS = True
 
 # Find Cointegrated Pairs
 FIND_COINTEGRATED = True
@@ -25,8 +25,8 @@ WINDOW = 21
 # Thresholds - Opening
 MAX_HALF_LIFE = 24
 ZSCORE_THRESH = 1.5
-USD_PER_TRADE = 20
-USD_MIN_COLLATERAL = 150
+USD_PER_TRADE = 10
+USD_MIN_COLLATERAL = 70
 
 # Thresholds - Closing
 CLOSE_AT_ZSCORE_CROSS = True
