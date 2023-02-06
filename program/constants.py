@@ -7,7 +7,7 @@ TOKEN_FACTOR_10 = ['XLM-USD', 'DOGE-USD', 'TRX-USD']
 
 # !!!! SELECT MODE !!!!
 # Available: MAINNET - TESTNET
-MODE = 'TESTNET'
+MODE = 'MAINNET'
 
 # Close all open positions and orders
 ABORT_ALL_POSITIONS = False
