@@ -15,10 +15,10 @@ ABORT_ALL_POSITIONS = False
 # Find Cointegrated Pairs
 FIND_COINTEGRATED = True
 
-# Manage Exits
+# Manage Exits - No use
 MANAGE_EXITS = False
 
-# Place Trades
+# Place Trades - No use
 PLACE_TRADES = False
 
 # Resolution, Test with others Timeframe.. add more data range into func_utils for lower timeframe
@@ -31,7 +31,7 @@ WINDOW = 21
 # Thresholds - Opening
 # Half Life: It's saying how long on average will it take for our spread to revert back, it's very useful because it helps us identify good looking spreads that will give us a higher probability of having profitable trades, Look for low half life, not negative, betweenn 0 and 25, half life is a great indicator for a spread that goes up and down.
 # What I'm looking for is like an oscillating spread.
-MAX_HALF_LIFE = 20
+MAX_HALF_LIFE = 15
 # It will Short / Long the first pair and Long / Short the second pair, lowering this value will make our strategy more aggressive and more trades will take place
 ZSCORE_THRESH = 1.5
 ZSCORE_CROSSING = 10

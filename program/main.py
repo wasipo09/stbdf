@@ -70,11 +70,11 @@ if __name__ == '__main__':
     check_balance()
 
     # Run as always on and simultaneously
-    t1 = Thread(target=manage_trade_exits, args=(client,))
+    #t1 = Thread(target=manage_trade_exits, args=(client,))
     t2 = Thread(target=open_positions, args=(client,))
-    t1.start()
+    #t1.start()
     t2.start()
-    t1.join(timeout=10)
+    #t1.join(timeout=10)
     t2.join(timeout=10)
 
     # Run as always on

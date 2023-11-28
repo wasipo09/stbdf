@@ -14,8 +14,8 @@ balance = float(account.data['account']['quoteBalance'])
 free_collateral = float(account.data['account']['freeCollateral'])
 
 LEVERAGE = 10
-# STOP_LOSS_PERCENTAGE = 100 / LEVERAGE
-STOP_LOSS_PERCENTAGE = 1 / 3
+STOP_LOSS_PERCENTAGE = 100 / LEVERAGE
+#  STOP_LOSS_PERCENTAGE = 1 / 3
 
 # 1% of our account for each trade with 10x leverage
 USD_PER_TRADE = math.trunc((free_collateral / 100) * LEVERAGE)
