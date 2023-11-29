@@ -3,7 +3,7 @@ from decouple import config  # Python Library for env vars
 
 
 # Token size must be a factor of 10, coins limitation
-TOKEN_FACTOR_10 = ['XLM-USD', 'DOGE-USD', 'TRX-USD']
+TOKEN_FACTOR_10 = []
 
 # !!!! SELECT MODE !!!!
 # Available: MAINNET - TESTNET

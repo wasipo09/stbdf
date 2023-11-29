@@ -7,7 +7,7 @@ from func_entry_pairs import open_positions
 from func_exit_pairs import manage_trade_exits
 from func_balance import balance, check_balance
 from func_messaging import send_message_telegram
-
+from datetime import datetime, timedelta
 from multiprocessing import Process
 from threading import Thread, Timer
 
@@ -15,9 +15,18 @@ from threading import Thread, Timer
 # MAIN FUNCTION
 if __name__ == '__main__':
 
-    # Message on start
-    send_message_telegram(
-        f'DYDX Bot launched successfully\n\nAccount Balance: ${round(balance, 2)}')
+
+    # Get the current UTC time
+    utc_time = datetime.utcnow()
+    bkk_time = utc_time + timedelta(hours=7)
+
+    # Format the message
+    message_without_lib = f"The bot is starting. \nLocal Time: {bkk_time.strftime('%Y-%m-%d %H:%M:%S')}"
+    send_message_telegram(message_without_lib)
+    print(message_without_lib)
+    # # Message on start
+    # send_message_telegram(
+    #     f'DYDX Bot launched successfully\n\nAccount Balance: ${round(balance, 2)}')
 
     # Connect to client
     try:
@@ -28,21 +37,21 @@ if __name__ == '__main__':
         send_message_telegram(f'Failed to connect to client, {e}')
         exit(1)
 
-    # Abort all open positions
-    if ABORT_ALL_POSITIONS:
-        try:
-            print('Closing all positions...')
-            close_orders = abort_all_positions(client)
-        except Exception as e:
-            print('Error closing all positions: ', e)
-            send_message_telegram(f'Error closing all positions, {e}')
-            exit(1)
+    # # Abort all open positions
+    # if ABORT_ALL_POSITIONS:
+    #     try:
+    #         print('Closing all positions...')
+    #         close_orders = abort_all_positions(client)
+    #     except Exception as e:
+    #         print('Error closing all positions: ', e)
+    #         send_message_telegram(f'Error closing all positions, {e}')
+    #         exit(1)
 
     # Find Cointegrated Pairs
     if FIND_COINTEGRATED:
         def find_cointegrated():
             # Fetch market prices and update csv file every 24 hours
-            Timer(86400, find_cointegrated).start()
+            Timer(3600, find_cointegrated).start()
             # Construct Market Prices
             try:
                 print('Fetching market prices, please allow 3 mins...')
@@ -67,15 +76,15 @@ if __name__ == '__main__':
         find_cointegrated()
 
     # Send balance through telegram
-    check_balance()
+    # check_balance()
 
-    # Run as always on and simultaneously
-    #t1 = Thread(target=manage_trade_exits, args=(client,))
-    t2 = Thread(target=open_positions, args=(client,))
-    #t1.start()
-    t2.start()
-    #t1.join(timeout=10)
-    t2.join(timeout=10)
+    # # Run as always on and simultaneously
+    # #t1 = Thread(target=manage_trade_exits, args=(client,))
+    # t2 = Thread(target=open_positions, args=(client,))
+    # #t1.start()
+    # t2.start()
+    # #t1.join(timeout=10)
+    # t2.join(timeout=10)
 
     # Run as always on
     # while True:

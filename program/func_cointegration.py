@@ -3,7 +3,8 @@ import numpy as np
 import statsmodels.api as sm
 from statsmodels.tsa.stattools import coint
 from constants import MAX_HALF_LIFE, WINDOW
-
+from func_messaging import send_message_telegram
+from datetime import datetime, timedelta
 # Calculate Half Life
 # https://www.pythonforfinance.net/2016/05/09/python-backtesting-mean-reversion-part-2/
 
@@ -45,10 +46,13 @@ def calculate_cointegration(series_1, series_2):
     hedge_ratio = model.params[0]
     spread = series_1 - (hedge_ratio * series_2)
     zero_crossings = len(np.where(np.diff(np.sign(spread)))[0])
+    zscore = round(calculate_zscore(spread).values.tolist()[-1],2)
     half_life = calculate_half_life(spread)
     t_check = coint_t < critical_value
     coint_flag = 1 if p_value < 0.05 and t_check else 0
-    return coint_flag, round(p_value, 2), round(coint_t, 2), round(critical_value, 2), round(hedge_ratio, 2), half_life, zero_crossings
+    base_side = 'BUY' if zscore < 0 else 'SELL'
+    quote_side = 'BUY' if zscore > 0 else 'SELL'
+    return base_side, quote_side, zscore, coint_flag, round(p_value, 2), round(coint_t, 2), round(critical_value, 2), round(hedge_ratio, 2), half_life, zero_crossings
 
 
 # Store Cointegration Results
@@ -69,7 +73,7 @@ def store_cointegration_results(df_market_prices):
                 float).tolist()
 
             # Check cointegration
-            coint_flag, p_value, t_value, critical_value, hedge_ratio, half_life, zero_crossings = calculate_cointegration(
+            base_side, quote_side, zscore, coint_flag, p_value, t_value, critical_value, hedge_ratio, half_life, zero_crossings = calculate_cointegration(
                 series_1, series_2)
 
             # Log pair
@@ -82,14 +86,33 @@ def store_cointegration_results(df_market_prices):
                     'c_value': critical_value,
                     'hedge_ratio': hedge_ratio,
                     'half_life': half_life,
-                    'zero_crossings': zero_crossings
+                    'zero_crossings': zero_crossings,
+                    'zscore':zscore,
+                    'base_side':base_side,
+                    'quote_side':quote_side
                 })
 
     # Create and save DataFrame
     df_criteria_met = pd.DataFrame(criteria_met_pairs)
     df_criteria_met.to_csv('cointegrated_pairs.csv')
-    del df_criteria_met
 
+    utc_time = datetime.utcnow()
+    
+
+    df_criteria_met = df_criteria_met[((df_criteria_met['zscore'] < -1) | (df_criteria_met['zscore'] > 1)) & (df_criteria_met['p_value'] < 0.02)]
+    df_criteria_met.sort_values(by='half_life', inplace=True)
+
+    if not df_criteria_met.empty:
+        # Assuming df_criteria_met is your filtered DataFrame
+        for index, row in df_criteria_met.iterrows():
+            bkk_time = utc_time + timedelta(hours=7)
+            close_time = bkk_time + timedelta(hours=int(row['half_life']))
+
+            send_message_telegram(f"{row['base_side']} {row['base_market']} | {row['quote_side']} {row['quote_market']} \nZ-Score: {row['zscore']} \nHalf-Life: {row['half_life']} \nZero-Crossings: {row['zero_crossings']} \nExpiry: {close_time.strftime('%Y-%m-%d %H:%M:%S')}")
+    else:
+       send_message_telegram('No pair detected.')
+
+    del df_criteria_met
     # Return result
     print('Cointegrated pairs successfully saved')
     return 'saved'
