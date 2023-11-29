@@ -108,7 +108,7 @@ def store_cointegration_results(df_market_prices):
             bkk_time = utc_time + timedelta(hours=7)
             close_time = bkk_time + timedelta(hours=int(row['half_life']))
 
-            send_message_telegram(f"{row['base_side']} {row['base_market']} | {row['quote_side']} {row['quote_market']} \nZ-Score: {row['zscore']} \nHalf-Life: {row['half_life']} \nZero-Crossings: {row['zero_crossings']} \nExpiry: {close_time.strftime('%Y-%m-%d %H:%M:%S')}")
+            send_message_telegram(f"{row['base_side']} {row['base_market']} | {row['quote_side']} {row['quote_market']} \nZ-Score: {row['zscore']} \nHalf-Life: {row['half_life']} \nZero-Crossings: {row['zero_crossings']} \nExpiry: {close_time.strftime('%Y-%m-%d %H:%M¥')}")
     else:
        send_message_telegram('No pair detected.')
 
